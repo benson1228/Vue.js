@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代辦事項-todos</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+    <style>
+        .completed{
+            text-decoration: line-through;
+            color: var(--mycolor03);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div class="row">
+            <div class="col-10 offset-1 mt-5">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">{{ text }}</span>
+                    <input type="text" class="form-control" v-model="newTodo" placeholder="請輸入代辦事項!" v-on:keyup.enter="addTodo">
+                    <button class="btn btn-outline-warning" type="button" id="button-addon2" v-on:click="addTodo">新增</button>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item" v-on:click="visibility = 'all'">
+                                <a class="nav-link" v-bind:class="{ 'active' : visibility == 'all'}" href="#">全部</a>
+                            </li>
+                            <li class="nav-item" v-on:click="visibility = 'active'">
+                                <a class="nav-link" v-bind:class="{ 'active' : visibility == 'active'}" href="#">進行中</a>
+                            </li>
+                            <li class="nav-item" v-on:click="visibility = 'completed'">
+                                <a class="nav-link" v-bind:class="{ 'active' : visibility == 'completed'}" href="#">已完成</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item" v-for="(item, index) in filterTodo" v-bind:key="item.id">
+                                <div class="d-flex" v-if="cacheItem.id != item.id">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" v-bind:id="item.id" v-model="item.completed">
+                                        <!-- label把for拿掉因為不能同時做點擊兩下，跟做table -->
+                                        <label class="form-check-label" v-bind:class="{ 'completed' : item.completed}"  v-on:dblclick="editItem(item)">
+                                            {{ item.title }}
+                                        </label>
+                                    </div>
+                                    <button type="button" class="btn-close ms-auto" aria-label="Close" v-on:click="removeTodo(item)"></button>                                    
+                                </div>
+                                <div class="fs-4">代辦事項的詳細內容!</div>
+                                <input type="text" class="form-control" 
+                                    v-if="cacheItem.id == item.id"
+                                    v-model="cacheTitle"
+                                    v-on:keyup.enter="doneTodo(item)"
+                                    v-on:keyup.esc="cancelTodo">
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex">
+                            <div class="fs-6 me-auto">還有{{ countActive }}筆未完成</div>
+                            <a href="#" v-on:click="destory">清除所有任務</a>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/vue.global.js"></script>
+    <script>
+        var App = {
+            data() {
+                return {
+                    text: '代辦事項',
+                    newTodo: '',
+                    visibility: 'all', //all: 全部 active:進行中 completed: 已完成
+                    cacheTitle: '',
+                    cacheItem: [],
+                    todos: [
+                        {
+                           id: '001',
+                           title: '訂午餐',
+                           completed: false 
+                        },
+                        {
+                           id: '002',
+                           title: '訂下午茶',
+                           completed: false 
+                        }
+                    ]
+                }
+            },
+            methods: {
+                addTodo() {
+                    var vm = this;
+                    var timestamp = Date.now();
+                    var newTitle = vm.newTodo.trim();
+                    //判斷阻止空白輸入
+                    if(!newTitle){
+                        return;
+                    }
+                    vm.todos.push({
+                        id: timestamp,
+                        title: newTitle,
+                        completed: false
+                    });
+                    vm.newTodo = '';
+                    // console.log(timestamp);
+                },
+                removeTodo(todo) {
+                    console.log(todo);
+                    var vm = this;
+                    var newIndex = vm.todos.findIndex((item, index) => {
+                        return todo.id == item.id
+                    });
+                    console.log(newIndex);
+                    vm.todos.splice(newIndex, 1);
+                },
+                editItem(todo) {
+                    var vm = this;
+                    vm.cacheTitle = todo.title;
+                    vm.cacheItem = todo;
+                },
+                doneTodo(todo){
+                    var vm = this;
+                    todo.title = vm.cacheTitle;
+                    vm.cacheTitle = '';
+                    vm.cacheItem = '';
+                },
+                cancelTodo(){
+                    var vm = this;
+                    vm.cacheTitle = '';
+                    vm.cacheItem = '';
+                },
+                destory() {
+                    this.todos = [];
+                }
+            },
+            computed: {
+                filterTodo() {
+                    var vm = this;
+                    if(vm.visibility == 'all'){
+                        return vm.todos;
+                    }else if(vm.visibility == 'active'){
+                        //將未完成的資料收集回傳
+                        var activeTodo = [];
+                        vm.todos.forEach(function(item, key){
+                            if(!item.completed){
+                                activeTodo.push(item);
+                            }
+                        });
+                        return activeTodo;
+                    }else if(vm.visibility == 'completed'){
+                        //將已完成的資料收集回傳
+                        var completedTodo = [];
+                        vm.todos.forEach(function(item, key){
+                            if(item.completed){
+                                completedTodo.push(item);
+                            }
+                        });
+                        return completedTodo;
+                    }
+                },
+                countActive() {
+                    var vm = this;
+                    var active = 0;
+                    vm.todos.forEach(function(item, key){
+                        if(!item.completed){
+                            active++;
+                        }
+                    });
+                    return active;
+                }
+            }
+        };
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

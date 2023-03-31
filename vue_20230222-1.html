@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue程式設計練習</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+</head>
+
+<body>
+    <div id="app" class="container-fluid">
+        <div class="row">
+            <div class="col-10 offset-1">
+                <!-- 1. computed -->
+                <div class="card mt-3">
+                    <div class="card-header text-bg-secondary fs-4 fw-700">
+                        1. computed
+                    </div>
+                    <div class="card-body">
+                        <input type="text" class="form-control" placeholder="請輸入要反轉的文字!" v-model="newText">
+                        <button class="btn btn-success mt-3" v-on:click="reverseText">反轉</button>
+                        <div class="fs-4 mt-3">反轉後的文字: {{ Rtext }}</div>
+                        <div class="fs-4 mt-3">反轉後的文字(computed): {{ reverseText01 }}</div>
+                        <hr>
+                        <input type="number" class="form-control mt-3" placeholder="身高" value="160" min="0"
+                            v-model="height">
+                        <input type="number" class="form-control mt-3" placeholder="體重" value="60" min="0"
+                            v-model="weight">
+                        <div class="fs-4 mt-3">BMI: {{ myBmi }}</div>
+                    </div>
+                </div>
+                <!-- 2. 表單 -->
+                <div class="card mt-3">
+                    <div class="card-header text-bg-secondary fs-4 fw-700">
+                        2. 表單
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="" v-model="checkboxM">
+                            <label class="form-check-label" for="">
+                                麥當勞點餐?
+                            </label>
+                        </div>
+                        <div v-if="checkboxM">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="漢堡" id=""
+                                    v-model="checkboxM_array">
+                                <label class="form-check-label" for="">
+                                    漢堡
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="薯條" id=""
+                                    v-model="checkboxM_array">
+                                <label class="form-check-label" for="">
+                                    薯條
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="可樂" id=""
+                                    v-model="checkboxM_array">
+                                <label class="form-check-label" for="">
+                                    可樂
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                    id="flexRadioDefault1" value="刷卡" v-model="radioPay">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    刷卡
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                    id="flexRadioDefault1" value="付現" v-model="radioPay">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    付現
+                                </label>
+                            </div>
+                            <select class="form-select mt-3" aria-label="Default select example" v-model="selectSugar">
+                                <option selected disabled>飲料甜度</option>
+                                <option value="全糖">全糖</option>
+                                <option value="半糖">半糖</option>
+                                <option value="無糖">無糖</option>
+                            </select>
+                            <div class="fs-4 mt-3">點餐內容</div>
+                            <ul class="list-group mt-3">
+                                <li class="list-group-item" v-for="(item, index) in checkboxM_array" v-bind:key="index">
+                                    {{ index + 1 }} - {{ item }}
+                                </li>
+                            </ul>
+                            <div class="fs-4 mt-3">付款方式: {{ radioPay }}</div>
+                            <div class="fs-4 mt-3">飲料甜度: {{ selectSugar }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/vue.global.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    newText: '',
+                    Rtext: '',  //反轉後的文字
+                    height: 160,
+                    weight: 60,
+                    checkboxM: false,
+                    checkboxM_array: [],  //麥當勞訂單
+                    radioPay: '刷卡',
+                    selectSugar: '',
+                }
+            },
+            methods: {
+                reverseText() {
+                    this.Rtext = this.newText.split('').reverse().join('');
+                }
+            },
+            computed: {
+                reverseText01() {
+                    return this.newText.split('').reverse().join('');
+                },
+                myBmi() {
+                    var height = this.height / 100;
+                    var weight = this.weight;
+                    var bmi = weight / (height * height);
+                    return bmi.toFixed(2);
+                }
+            }
+        };
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

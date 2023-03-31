@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>品項新增-版本二</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-end">
+                    <button class="btn btn-primary my-3" @click="addItem">新增商品</button>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">全部商品</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">上架上品</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">下架商品</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>標題</th>
+                                    <th>圖片</th>
+                                    <th>上架狀態</th>
+                                    <th>編輯功能</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in allProducts" :key="item.id"
+                                    :class="{'table-danger' : item.onStock}">
+                                    <td width="20%">{{ item.name }}</td>
+                                    <td width="40%">
+                                        <img :src="item.imagesUrl" class="w-50" alt="">
+                                    </td>
+                                    <td width="20%">
+                                        <input type="checkbox" class="form-check-input" v-model="item.onStock">
+                                    </td>
+                                    <td width="20%">
+                                        <button class="btn btn-outline-info w-100" @click="editProduct(item)">編輯</button>
+                                        <button class="btn btn-danger w-100 mt-2">刪除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div v-if="isNew || temp.id">
+                    <div class="mb-3">
+                        <label for="" class="form-label">產品名稱</label>
+                        <input type="email" class="form-control" id="" v-model="temp.name">
+                    </div>
+                    <img v-bind:src="temp.imagesUrl" class="w-50" alt="">
+                    <div class="mb-3">
+                        <label for="" class="form-label">產品圖片</label>
+                        <!-- <input type="email" class="form-control" id="" v-model="temp.imagesUrl"> -->
+                        <input type="file" class="form-control" id="">
+                    </div>
+                    <button class="btn btn-primary" @click="addProduct">確認</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/vue.global.js"></script>
+    <script>
+        var products = [
+            {
+                id: '001',
+                name: '好吃的蛋糕001',
+                imagesUrl: 'images/cake01.jpg',
+                onStock: false
+            },
+            {
+                id: '002',
+                name: '好吃的蛋糕002',
+                imagesUrl: 'images/cake02.jpg',
+                onStock: false
+            },
+            {
+                id: '003',
+                name: '好吃的蛋糕003',
+                imagesUrl: 'images/cake03.jpg',
+                onStock: false
+            },
+        ];
+
+        var App = {
+            data() {
+                return {
+                    isNew: false, //紀錄是否新增商品
+                    allProducts: [],
+                    temp: {
+                        name: '汽車001',
+                        imagesUrl: ''
+                    },
+                }
+            },
+            created() {
+                this.allProducts = products;
+            },
+            methods: {
+                addProduct() {
+                    var vm = this;
+                    if (!vm.temp.id) {
+                        vm.temp.id = new Date().getTime();
+                        vm.temp.onStock = false;
+                        vm.allProducts.push(vm.temp);
+                        vm.temp = {};
+                    } else {
+                        vm.allProducts.forEach((item, index) => {
+                            if (item.id == vm.temp.id) {
+                                vm.allProducts[index] = vm.temp;
+                            }
+                        });
+                        vm.temp = {};
+                    }
+                    vm.isNew = false;
+                },
+                editProduct(item) {
+                    this.temp = { ...item };
+                },
+                addItem() {
+                    this.isNew = true;
+                }
+
+            },
+        }
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

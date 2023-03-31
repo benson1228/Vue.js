@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高雄好好行</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+        .banner {
+            background-image: url(https://khh.travel/Content/images/static/static-banner-03.jpg);
+            height: 360px;
+            background-position: center center;
+            background-size: cover;
+        }
+
+        .bg-cover {
+            height: 160px;
+            background-position: center center;
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="banner">
+            <div class="display-1 fw-900 text-white p-5">
+                {{ title }}
+            </div>
+        </div>
+        <div class="container">
+            <div class="row justify-content-center" style="margin-top: -20px;">
+                <div class="col-md-6">
+                    <select class="form-select" v-model="currentLocation">
+                        <option value="" selected>--全部--</option>
+                        <option :value="item" v-for="(item, index) in regions">
+                            {{ item }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mt-3" v-for="(item, index) in filterData[currentPage]">
+                    <div class="card h-100">
+                        <!-- <div class="bg-cover rounded-top" style="background-image: url(https://khh.travel/content/images/Attractions/25/640x480_ck9a0454_6262.jpg);"></div> -->
+
+                        <div class="bg-cover rounded-top" :style="{backgroundImage: 'url(' +item.Picture1 +')'}"></div>
+                        <div class="card-body">
+                            <div class="fs-5">
+                                <i class="fa-solid fa-house-signal text-info me-2"></i>景點名稱: {{item.Name}}
+                            </div>
+                            <div class="fs-5">
+                                <i class="fa-regular fa-clock text-danger me-2"></i>營業時間: {{item.Opentime}}
+                            </div>
+                            <div class="fs-5">
+                                <i class="fa-solid fa-location-dot text-success me-2"></i>地址: {{item.Add}}
+                            </div>
+                            <div class="fs-5">
+                                <i class="fa-solid fa-phone text-warning me-2"></i>電話: {{item.Tel}}
+                            </div>
+                            <div class="fs-5" v-if="item.Ticketinfo">
+                                <i class="fa-brands fa-cc-paypal text-secondary me-2"></i>收費方式: {{item.Ticketinfo}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-4">
+                <div class="col-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" :class="{ 'active' : currentPage == item - 1}" v-for="(item, index) in filterData.length">
+                                <a class="page-link" href="#" @click.prevent="currentPage = item - 1">{{ item }}</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+        var App = {
+            data() {
+                return {
+                    title: "高雄好好行",
+                    currentPage: 0,
+                    currentLocation: '',
+                    numOfPage: 15,
+                    regions: [], //紀錄區域名稱
+                    mydata: []
+                }
+            },
+            created() {
+                var vm = this;
+                var url = 'https://api.kcg.gov.tw/api/service/get/9c8e1450-e833-499c-8320-29b36b7ace5c';
+                axios.get(url)
+                    .then(function (response) {
+                        // handle success
+                        console.log(response.data.data.XML_Head.Infos.Info);
+                        vm.mydata = response.data.data.XML_Head.Infos.Info;
+                        vm.getRegion();
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+                    .finally(function () {
+                        // always executed
+                    });
+            },
+            computed: {
+                filterData() {
+                    //過濾mydata 330資料
+                    //[[0~29],[30~59],[60~99]......,[299~329]] 
+                    var vm = this;
+                    var items = []; //收集每一區的旅遊資料
+                    if (vm.currentLocation != '') {
+                        items = vm.mydata.filter((item, index) => {
+                            return item.Add.substring(3, 9) == vm.currentLocation
+                        });
+                    } else {
+                        items = vm.mydata;
+                    }
+
+                    var newData = [];
+                    items.forEach((item, key) => {
+                        //先畫二維陣列格子
+                        if (key % vm.numOfPage == 0) {
+                            newData.push([]);
+                        }
+                        //資料擺入陣列
+                        var page = parseInt(key / vm.numOfPage);
+                        newData[page].push(item);
+                    });
+                    return newData;
+                }
+            },
+            methods: {
+                getRegion() {
+                    var vm = this;
+                    var regions = new Set();
+                    vm.mydata.forEach((item, index) => {
+                        regions.add(item.Add.substring(3, 9));
+                    });
+                    vm.regions = Array.from(regions);
+                }
+            },
+        };
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue練習</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        .box{
+            height: 160px;
+            width: 160px;
+            transition: transform 0.5s;
+        }
+        .rotate{
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="container-fluid">
+        <div class="row">
+            <div class="col-10 offset-1">
+                <!-- 1. 綁定 v-model -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="fs-3">1. 綁定 v-model</div>
+                        <input type="text" class="form-control" v-model="text01">
+                        <div class="fs-4">{{ text01 }}</div>
+                        <div v-text="text_html"></div>
+                        <div v-html="text_html"></div>
+                    </div>
+                </div>
+
+                <!-- 2. 綁定 v-bind -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="fs-3">2. 綁定 v-bind</div>
+                        <img v-bind:src="imgSrc" alt="" v-bind:class="className">
+                    </div>
+                </div>
+
+
+                <!-- 3. v-if and v-for -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="fs-3">3. v-if and v-for</div>
+                        <ul class="list-group">
+                            <li class="list-group-item" v-for="(item, index) in listData" v-bind:key="item.id">
+                                {{ index + 1 }} -- {{ item.product }}一公斤賣 {{ item.price }} 元.
+                            </li>
+                        </ul>
+                        <div class="fs-4 text-danger">PS: v-for 和 v-if 不可以寫在同一個標籤!</div>
+                        <ul class="list-group mt-3">
+                            <template v-for="(item, index) in listData" v-bind:key="item.id">
+                                <li class="list-group-item" v-if="item.price > 100">
+                                    {{ index + 1 }} -- {{ item.product }}一公斤賣 {{ item.price }} 元.
+                                </li>
+                            </template>
+                        </ul>
+
+                        <div class="fs-4" v-if="true">{{ text01 }}</div>
+                    </div>
+                </div>
+
+                <!-- 4. v-on -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="fs-3">4. v-on</div>
+                        <button class="btn btn-primary" v-on:click="test01Fun">監聽功能</button>
+
+                        <div class="fs-3">Tabs選單練習</div>
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link" v-on:click.prevent="mylink = '蘋果'" 
+                                    v-bind:class="{ 'active' : mylink == '蘋果'}" href="#">蘋果</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" v-on:click.prevent="mylink = '香蕉'" 
+                                    v-bind:class="{ 'active' : mylink == '香蕉'}" href="#">香蕉</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"  v-on:click.prevent="mylink = '草莓'" 
+                                   v-bind:class="{ 'active' : mylink == '草莓'}" href="#">草莓</a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="fs-2">反轉文字</div>
+                        <input type="text" class="form-control" v-model="newText">
+                        <div class="fs-3">{{ newText }}</div>
+                        <button class="btn btn-info mt-3" v-on:click="reverseText">反轉文字</button>
+                        <div class="fs-3">{{ RText }}</div>
+                        <hr>
+                        <div class="fs-2">BMI 計算(大於30紅色, 30~24綠色, 小於24藍色)</div>
+                        <input type="number" class="form-control" placeholder="體重公斤" min="0" v-model="weight">
+                        <input type="number" class="form-control mt-2" placeholder="身高公分" min="0" v-model="height">
+                        <button class="btn btn-outline-danger mt-3" v-on:click="bmi">計算BMI</button>
+                        <div class="fs-1" v-bind:class="{ 'text-danger': mybmi > 30,  'text-success': 24 < mybmi &&  mybmi < 30, 'text-primary' : mybmi < 24}">BMI為: {{ mybmi }}</div>
+
+                        <hr>
+                        <div class="box border border-danger " v-bind:class="{ 'rotate' : isRotate, 'animate__animated animate__rotateInUpLeft' : isrotateInUpLeft, 'animate__animated animate__flip' :isflip, 'animate__animated animate__zoomOutUp': isanimate__zoomOutUp}"></div>
+                        <button class="btn btn-primary mt-2 me-2" v-on:click="isRotate = !isRotate" data-bs-toggle="button">選轉 45度</button>
+                        <button class="btn btn-primary mt-2 me-2" v-on:click="isrotateInUpLeft = !isrotateInUpLeft">使用rotateInUpLeft動畫01</button>
+                        <button class="btn btn-primary mt-2 me-2" v-on:click="isflip = !isflip">使用flip動畫02</button>
+                        <button class="btn btn-primary mt-2" v-on:click="isanimate__zoomOutUp = !isanimate__zoomOutUp">使用zoomOutUp動畫03</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/vue.global.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    test01: '雲端技術應用實務班-Vue教學!',
+                    text01: '早安!',
+                    text_html: '<h1>這是h1字型</h1>',
+                    imgSrc: 'images/party002.jpg',
+                    className: 'w-100',
+                    mylink: '蘋果',
+                    newText: '',
+                    RText:'', //紀錄反轉後的文字
+                    weight: '',
+                    height: '',
+                    mybmi: 0,
+                    isRotate: false,
+                    isrotateInUpLeft: false,
+                    isflip: false,
+                    isanimate__zoomOutUp: false,
+                    listData: [
+                        {
+                            id: '01',
+                            product: '蘋果',
+                            price: 50
+                        },
+                        {
+                            id: '02',
+                            product: '香蕉',
+                            price: 90
+                        },
+                        {
+                            id: '03',
+                            product: '草莓',
+                            price: 185
+                        }
+                    ]
+                }
+            },
+            methods: {
+                test01Fun() {
+                    console.log("test");
+                },
+                reverseText() {
+                    console.log(this.newText);
+                    this.RText = this.newText.split('').reverse().join('');
+                },
+                bmi() {
+                    height = this.height/100;
+                    weight = this.weight;
+                    this.mybmi = weight/(height*height);
+                    this.mybmi = this.mybmi.toFixed(2);
+                }
+            },
+        };
+
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

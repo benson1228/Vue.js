@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container-sm my-5" id="app">
+        <div class="row">
+            <div class="text-end">
+                <button class="btn btn-primary mb-2" @click="addItem">新增</button>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="visibility = 'all'"
+                                :class="{'active': visibility == 'all'}">全部</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="visibility = 'onstock'"
+                                :class="{'active': visibility == 'onstock'}">上架商品</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="visibility = 'outstock'"
+                                :class="{'active': visibility == 'outstock'}">下架商品</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="col-12">
+                        <table class="table">
+                            <thead>
+                                <th>標題</th>
+                                <th>圖片</th>
+                                <th>銷售狀況</th>
+                                <th>編輯</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in filterProduct" :class="{'table-info' : item.onStock}"
+                                    :key="item.id">
+                                    <td width="25%"> {{ item.name }}</td>
+                                    <td width="40%">
+                                        <img :src="item.imageUrl" class="w-50" alt="">
+                                    </td>
+                                    <td width="15%">
+                                        <input type="checkbox" name="" id="" v-model="item.onStock">
+                                    </td>
+                                    <td width="20%">
+                                        <button class="btn btn-outline-danger w-100"
+                                            @click="editItem(item)">編輯</button>
+                                        <button class="btn btn-warning mt-3 w-100" @click="removeItem(item)">刪除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-12" v-if="isNew || temp.id">
+                        <div class="mb-3">
+                            <label for="pname" class="form-label">產品名稱</label>
+                            <input type="text" class="form-control" id="pname" placeholder="" v-model="temp.name">
+                        </div>
+                        <div class="mb-3">
+                            <img :src="temp.imgUrl" alt="" class="w-50">
+                            <hr>
+                            <label for="pimg" class="form-label">產品圖片</label>
+                            <input type="file" class="form-control" id="pimg" placeholder="" @change="getImage">
+                        </div>
+                        <button class="btn btn-primary" @click="confirmEdit">確認</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        var products = [
+            {
+                id: '001',
+                name: '豪華版蛋糕001',
+                imageUrl: 'images/cake02.jpg',
+                onStock: false
+            },
+            {
+                id: '002',
+                name: '豪華版蛋糕002',
+                imageUrl: 'images/cake03.jpg',
+                onStock: false
+            },
+            {
+                id: '003',
+                name: '豪華版蛋糕003',
+                imageUrl: 'images/cake04.jpg',
+                onStock: false
+            }
+        ]
+        var App = {
+            data() {
+                return {
+                    isNew: false,
+                    allproducts: [],
+                    visibility: 'all', // all, onstock, outstock
+                    temp: {
+                        name: '巧克力蛋糕',
+                        imageUrl: 'images/cake01.jpg'
+                    }
+                }
+            },
+            created() {
+                this.allproducts = products;
+            },
+            methods: {
+                getImage(the_file) {
+                    console.log(the_file.target.files[0]);
+                    console.log(the_file.target.files[0].name);
+                    this.temp.imageUrl = 'images/' + the_file.target.files[0].name;
+                },
+                confirmEdit() {
+                    var vm = this;
+                    if (!vm.temp.id) {
+                        vm.temp.id = new Date().getTime();
+                        vm.temp.onStock = false;
+                        vm.allproducts.push(vm.temp);
+                        vm.temp = {};
+                    } else {
+                        vm.allproducts.forEach(function (item, index) {
+                            if (item.id == vm.temp.id) {
+                                vm.allproducts[index] = vm.temp;
+                            }
+                        });
+                        vm.temp = {};
+                    }
+                    this.isNew = false;
+                },
+                editItem(item) {
+                    this.temp = { ...item };
+                },
+                addItem() {
+                    this.isNew = true;
+                    this.temp = {};
+                },
+                removeItem(product) {
+                    if(confirm('確認刪除"'+product.name+'"?')){
+                        var vm = this;
+                        var newIndex = vm.allproducts.findIndex((item, index) => {
+                            return item.id = product.id;
+                        });
+                        vm.allproducts.splice(newIndex, 1);
+                    }
+                }
+            },
+            computed: {
+                filterProduct() {
+                    var vm = this;
+                    if (vm.visibility == 'all') {
+                        return vm.allproducts;
+                    } else if (vm.visibility == 'onstock') {
+                        var onstock_product = [];
+                        vm.allproducts.forEach(function (item, index) {
+                            if (item.onStock) {
+                                onstock_product.push(item);
+                            }
+                        });
+                        return onstock_product;
+                    } else if (vm.visibility == 'outstock') {
+                        var outstock_product = [];
+                        vm.allproducts.forEach(function (item, index) {
+                            if (!item.onStock) {
+                                outstock_product.push(item);
+                            }
+                        });
+                        return outstock_product;
+                    }
+                }
+            }
+        }
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

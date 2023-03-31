@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue練習-使用口罩資料</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div class="row">
+            <div class="col-12">
+                <div class="card mt-5">
+                    <div class="card-header text-bg-warning fs-5 fw-700">藥局列表</div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item" v-for="(item, index) in maskData" v-bind:key="index">
+                               {{ index + 1 }} - {{ item.properties.name }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-3">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">上一頁</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">下一頁</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    test: 'hello',
+                    maskData: [],
+                }
+            },
+            created() {
+                var vm = this;
+                axios.get('js/points.json')
+                    .then(function (response) {
+                        // handle success
+                        console.log(response);
+                        vm.maskData = response.data.features;
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+                    .finally(function () {
+                        // always executed
+                    });
+            },
+            methods: {
+
+            },
+            computed: {
+                filterData() {
+                    var vm = this;
+                    var newData = [] ; //[[], [], [],....................[]]
+                    vm.maskData.forEach(function(item, key){
+                        if(key % 100 == 0 ){
+                            newData.push([]);
+                        }
+                        var page = parseInt(key/100);
+                        newData[page].push(item); 
+                    });
+                    return newData;
+                }
+            }
+        };
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

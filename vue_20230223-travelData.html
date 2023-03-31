@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 分頁練習-使用旅館民宿觀光資訊資料庫</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+</head>
+
+<body>
+    <div id="app" class="container">
+        <div class="row mt-3">
+            <select class="form-select" aria-label="Default select example">
+                <option selected disabled>---先選擇縣市---</option>
+                <option value="1">台北市</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card mt-3">
+                    <div class="card-header text-bg-success fw-700 fs-2">台灣旅館民宿列表</div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item" v-for="(item, index) in filterData[currentPage]"
+                                v-bind:key="index">
+                                {{ index+1 }} - {{ item.Name }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination flex justify-content-center">
+                    <li class="page-item" v-if="currentPage > 0"><a class="page-link" href="#"
+                            v-on:click.prevent="currentPage = currentPage-1">上一頁</a></li>
+                    <li class="page-item" v-for="(page, index) in filterData.length" v-bind:key="index"
+                        v-bind:class="{ 'active' : currentPage == page-1}">
+                        <a class="page-link" href="#" v-on:click.prevent="currentPage = page-1">{{ page }}</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">下一頁</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    hotelData: [],  //全部旅館資料
+                    currentPage: 0,
+                    numOfpage: 1000,
+                    regions: [], //儲存所以有的縣市名稱
+                }
+            },
+            created() {
+                var vm = this;
+                axios.get('js/hotel_C_f.json')
+                    .then(function (response) {
+                        // handle success
+                        console.log(response);
+                        vm.hotelData = response.data.XML_Head.Infos.Info;
+                        vm.getRegion();
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+                    .finally(function () {
+                        // always executed
+                    });
+            },
+            computed: {
+                filterData() {
+                    var vm = this;
+                    var newData = []; //[[], [], []...........[]]
+                    vm.hotelData.forEach(function (item, index) {
+                        if (index % vm.numOfpage == 0) {
+                            newData.push([]);
+                        }
+                        var page = parseInt(index / vm.numOfpage);
+                        newData[page].push(item);
+                    });
+                    return newData;
+                }
+            },
+            methods: {
+                getRegion() {
+                    var vm = this;
+                    const regions = new Set(); //用來儲存獨一無二的資料
+                    vm.hotelData.forEach(function(item, index){
+                        regions.add(item.Region);
+                    });
+                    vm.regions = Array.from(regions);
+                }
+            },
+        };
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

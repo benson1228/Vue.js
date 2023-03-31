@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 練習</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+</head>
+
+<body>
+    <div id="app" class="p-5">
+        <div class="fs-3">1. 綁定</div>
+        <input type="text" class="form-control" v-model="text01">
+        <h1>{{ text01 }}</h1>
+        <h5 v-text="text01"></h5>
+        <h5 v-text="text_html"></h5>
+        <div v-html="text_html"></div>
+        <hr>
+        <img v-bind:src="imgSrc" alt="" v-bind:class="className">
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/vue.global.js"></script>
+    <script>
+        var App = {
+            data() {
+                return {
+                    text01: 'hello!111111',
+                    text02: 'hello!222222',
+                    text03: 'hello!333333',
+                    text_html: '<h1>4444444444</h1>',
+                    imgSrc: 'img/1.jpg',
+                    className: 'w-100'
+                }
+            },
+            created() {
+                let aa;
+                for(let i=0; i<100; i++){
+                    console.log(i);
+                    aa = i+1;
+                    console.log(aa);
+                }
+            }
+        }
+
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

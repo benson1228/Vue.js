@@ -1,0 +1,346 @@
+
+10/25
+練習建立
+1. test01.txt  複製到 test01資料夾
+2. test02.txt  複製到 test02資料夾
+3. test03.txt  複製到 test03資料夾
+4. test04.txt  複製到 test04資料夾
+5. test05.txt  複製到 test05資料夾
+
+
+
+10/25
+1. 將/etc/manpath.config複製到本目錄底下 命名為manpath.config01
+2. 將/etc/manpath.config複製到本目錄底下 命名為manpath.config02
+3. 將/etc/manpath.config複製到本目錄底下 命名為manpath.config03
+
+
+
+1. 在使用者owner09的桌面下 新增一個test01.txt的檔案
+2. 在使用者owner09的桌面下 新增一個test資料夾
+3. 將test01.txt 複製到 test資料夾並儲存為test01.txt.bak
+4. 將test01.txt 複製到 test資料夾並儲存為test02.txt.bak
+5. 將test01.txt 複製到 test資料夾並儲存為test03.txt.bak
+6. 將test01.txt 複製到 test資料夾並儲存為test04.txt.bak
+7. 將test01.txt.bak擁有者更改為root, 群組更改為owner
+8. 將test02.txt.bak擁有者更改為owner01, 群組更改為root
+9. 將test03.txt.bak 權限更改為 rw-r--r--
+10. 將test04.txt.bak 權限更改為 -rwxrwxrwx  擁有者更改為owner 群組更改為owner
+11. 將test資料夾權限更改為 rwxrw-rw- 
+
+請問 test資料夾的最終權限為何?
+drwxrw-rw- 2 owner owner 4096 10月 25 15:36 test
+
+請問 test裡面的所有檔案權限為何?
+-rw-rw-r-- 1 root    owner 6 10月 25 15:36 test01.txt.bak
+-rw-rw-r-- 1 owner01 root  6 10月 25 15:36 test02.txt.bak
+-rw-r--r-- 1 owner   owner 6 10月 25 15:36 test03.txt.bak
+-rwxrwxrwx 1 owner   owner 6 10月 25 15:36 test04.txt.bak
+
+
+
+
+
+ownerweb/123456 => /var/www/html (ownerweb:ownerweb 755)
+
+net2ftp_v1.3(file_to_upload)    /var/www/html
+
+1. 上傳 net2ftp_v1.3.zip 至 /var/www/html
+2. 解壓縮 net2ftp_v1.3.zip
+3. 將files_to_uploade資料夾更名為 net2ftp01 並移動到 /var/www/html/net2ftp01
+4. 刪除部相關檔案
+5. http://192.168.10.XX/net2ftp01
+6. 設定net2ftp最大上傳上限 14M
+7. 更改LOGO
+
+1. 上傳 net2ftp_v1.3.zip 至 /var/www/html
+2. 解壓縮 net2ftp_v1.3.zip
+3. 將files_to_uploade資料夾更名為 net2ftp02 並移動到 /var/www/html/net2ftp02
+4. 刪除部相關檔案
+5. http://192.168.10.XX/net2ftp02
+6. 設定net2ftp最大上傳上限 16M
+7. 更改LOGO
+
+ftp權限設定: 
+ownerweb ==> /var/www/html
+
+1. 上傳 net2ftp_v1.3.zip 至 /var/www/html
+2. 解壓縮 net2ftp_v1.3.zip
+3. 將files_to_uploade資料夾更名為 net2ftp03 並移動到 /var/www/html/net2ftp03
+4. 刪除不相關檔案
+5. http://192.168.10.XX/net2ftp03
+6. 設定net2ftp最大上傳上限 18M
+7. 更改LOGO
+
+
+1. phpMyAdmin-4.9.10-all-languages.zip 上傳並解壓縮至 ==>  /var/www/html/phpMyAdmin
+2. htpp://192.168.10.XXX/phpMyAdmin
+
+
+sudo apt-get install php7.4-cli php7.4-common php7.4-json php7.4-opcache php7.4-mysql php7.4-mbstring php7.4-zip php7.4-fpm php7.4-intl php7.4-simplexml
+
+
+CREATE USER 'admin'@'%' IDENTIFIED BY '123456';
+
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;
+
+
+
+使用者:             資料庫:
+dbuser01/123456   => dbtest01
+dbuser02/123456   => dbtest02
+dbuser03/123456   => dbtest03
+
+1. 安裝ubuntu(掛載vdi)
+2. 設定網路連線
+3. 設定ssh
+4. 設定ftp server 
+	=> 設定帳號登入至某一個資料匣
+5. 設定 net2ftp
+	=> http://192.168.10.XX/net2ftp
+	=> 上傳上限
+	=> logo修改
+6. apache server設定
+7. phpMyAdmin 設定	
+
+加設wordpress
+*********************
+1. 上傳 wordpress-6.1-zh_TW.zip 並解壓縮 ==>  /var/www/html/wp (ownerweb:ownerweb 755)
+2. htpp://www.tcnr99.com/wp
+3. 帳密: wp01/123456 資料庫: wp01_db 主機: 本機/localhost
+
+
+*****以下使用不同佈景主題!!!!*********
+*****************************************
+wordpress部落格002
+1. htpp://www.tcnr99.com/wp02
+2. 帳密: wp02/123456 資料庫: wp02_db 主機: 本機/localhost
+
+wordpress部落格003
+1. htpp://www.tcnr99.com/wp03
+2. 帳密: wp03/123456 資料庫: wp03_db 主機: 本機/localhost
+
+wordpress部落格004
+1. htpp://www.tcnr99.com/wp04
+2. 帳密: wp04/123456 資料庫: wp04_db 主機: 本機/localhost
+
+20221108
+****************************
+複習:移除一個wordpress(資料夾與資料庫)並快速復原安裝
+
+
+***********20221109***********
+1. 上傳bbclone.zip
+2. 解壓縮放置/var/www/html
+3. http://www.tcnrXX.com/bbclone
+
+
+課堂練習
+1. 將以下網站安裝佈景主題並配置不同的選單
+	htpp://www.tcnr99.com/wp02
+	htpp://www.tcnr99.com/wp03
+	htpp://www.tcnr99.com/wp04
+2. 將此三個網站數據回傳至http://www.tcnrXX.com/bbclone
+   並可以明顯得知每個網站之每個選單的流量	
+
+CREATE USER 'admin'@'%' IDENTIFIED BY '123456';
+
+
+*********************20221116******************
+HTML5 + CSS3 + JavaScript
+jquery
+bootstrap
+
+link ==> css  ==> href 
+script ==> js ==> src
+
+. ====> class  ==> css
+# ====> id     ==> js
+
+課堂練習
+1. 設定5個全域變數用來設定顏色
+2. 設定區域變數(使用上述的全域變數加以修改)
+
+******************20221129******************
+json 格式
+[
+	{
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值"
+	},
+	{
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值"
+	},
+	{
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值"
+	},
+	.......	
+]
+
+php 轉換json, 轉換的內容必須陣列(array) 
+json_encode()
+
+
+**************************20221206*********************************
+資料庫名稱: testdb
+資料表: product
+欄位: 1.ID(編號or序號)  2.Pname(產品名稱) 3.Price(產品價格) 4.Pnum(產品數量) 5.Created_at(建檔日期)
+
+帳號owner/123456  ==> 一般的使用者, 只能管理我們賦予給他的資料庫!(testdb)
+
+
+************20221206練習************
+1.建立資料庫相關
+  使用testdb, 建立資料表	
+  資料表: user01
+  欄位: 1.ID(編號or序號)  2.Username(帳號) 3.Password(密碼) 4.Nickname(暱稱) 5.Height(身高公分) 6.Weight(體重公斤) 7.Created_at(建檔日期)
+
+2.撰寫API
+  撈取user01 資料表所有的資料並轉換成json格式輸出!
+
+3.撰寫前端畫面
+  串接API資料, 並將所有的資料渲染成合適的畫面呈現!	  	
+
+
+
+
+************20221208練習************
+前端畫面規格
+1.ID(編號or序號)  
+2.Username(帳號) 5~12字
+3.Password(密碼) 8~12字
+4.Nickname(暱稱) 5~12字 
+5.Height(身高公分)  80~200
+6.Weight(體重公斤)  5~120
+7.Created_at(建檔日期)
+
+************20221213********************
+json 格式
+[
+	{
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值",
+		"欄位名稱" : "值"
+	}
+]
+
+20221207-user01-selectDB-api.php
+
+input:
+none
+
+output:
+{"state": true, "message":"讀取資料成功!", "data":輸出的資料}
+{"state": false, "message":"讀取資料失敗或查無資料!"}
+
+
+
+
+20221207-InsertDB.php
+input:
+{"username":"XXX", "password":"XXX", "nickname":"XXX", "height":"XXX", "weight":"XXX"}
+
+output:
+{"state": true, "message":"新增資料成功!"}
+{"state": false, "message":"新增資料失敗!錯誤代碼或相關訊息"}
+{"state": false, "message":"欄位不得為空白!"}
+{"state": false, "message":"缺少規定欄位!"}
+
+
+************20221213練習************
+1.建立資料庫相關
+  使用testdb, 建立資料表	
+  資料表: food01
+  欄位: 1.ID(編號or序號)  2.Pname(便當名稱) 3.Price(單價) 4.Pnum(數量) 5.Created_at(建檔日期)
+
+2.撰寫API
+	01. 20221213_food_R_api.php
+  	說明: 撈取所有的資料轉換成JSON格式輸出
+  	input: 
+  		none 
+  	oupput:
+	  	{"state": true, "message":"讀取資料成功!", "data":輸出的json資料}
+		{"state": false, "message":"讀取資料失敗或查無資料!"}
+
+	02. 20221213_food_C_api.php
+  	說明: 新增便當資料
+	input:
+		{"pname":"雞腿飯", "price":"100", "pnum":"10"}
+
+	output:
+		{"state": true, "message":"新增資料成功!"}
+		{"state": false, "message":"新增資料失敗!錯誤代碼或相關訊息"}
+		{"state": false, "message":"欄位不得為空白!"}
+		{"state": false, "message":"缺少規定欄位!"}
+
+
+3.撰寫前端畫面
+	03. 20221213_food_R.html
+  	說明: 串接2022121_food_R_api.php資料, 並將所有的資料渲染成合適的畫面呈現!	
+
+  	04. 20221213_food_C.html
+  	說明: 串接2022121_food_C_api.php, 並設計合適的表單畫面讓使用者輸入, 使訂便當行為合理化!
+  	(表單欄位須符合每個欄位的字數規定, 方能將訊息傳遞給後端!!!便當名稱: 3~8字, 價格:1~500, 數量: 1~30)	
+
+
+  	https://webdemorichie.000webhostapp.com/training/
+
+************20221228課堂作業練習************
+1. 模仿課堂CRUD例子製作一個可以提供建檔功能網站
+2. 須具備基本的CRUD功能
+3. 使用專題的題目當練習
+4. 欄位至少5個(不包含ID and Created_at)
+5. 結合今天剛學習的表單應用章節, 使輸入表單功能多樣化(至少四種以上)
+6. 完成後自行同步至webhost並於作品區塊展示
+7. 完成日期1/10
+
+
+2023/02/01
+每個帳號登入後顯示以下選單:
+1. 後臺管理 (帳號被啟用才能使用該功能)
+2. 備用選單01 (帳號被啟用才能使用該功能)
+3. 備用選單02 (帳號被啟用才能使用該功能)
+
+備用選單01 and 備用選單02 需顯示登入帳號的相關訊息(navbar)
+
+20230209 map 作業
+1. 以上課內容為基礎尋找適合的opendata 
+2. 利用地圖來整合相關的服務應用
+3. ex: ubike, 旅遊景點...
+4. 與專題會員系統整合(EX: 會員隱藏功能)
+5. 完成後自行同步至webhost並於作品區塊展示
+6. demomap/123456
+7. 繳交日期: 
+
+
+
+20230302 Vue toDos 作業
+1. 以上課內容為基礎製作
+2. 加入一個代辦事項內容的欄位
+3. 代辦事項內容必須是可以編輯
+4. (繳交方法一)專題會員系統整合(EX: 會員隱藏功能demomap/123456)
+5. (繳交方法二)完成後自行同步至webhost並於作品區塊展示
+6. 繳交日期: 2023/3/10
+
+20230307
+owner0307/123456 => /tmp/test0307 (owner0307:owner0307 755)
+
+
+git init (初始化)
+git status (確認目前狀態)
+git commit -m "註解" (加入註解)
+git add . (將所有更改的檔案加入git資料庫紀錄起來)
+git log (log 所以更改紀錄)
